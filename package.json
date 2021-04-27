@@ -1,0 +1,46 @@
+{
+  "name": "edison-message-body",
+  "version": "0.0.4",
+  "description": "body for message",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "dev": "webpack serve -c ./config/webpack.dev.js",
+    "build": "webpack -c ./config/webpack.pro.js && yarn tsc"
+  },
+  "homepage": "https://github.com/Always-Near/edison-message-body.git",
+  "keywords": [
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Always-Near/edison-message-body.git"
+  },
+  "author": "Near",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-native": "^0.63.41",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.6",
+    "buffer": "^6.0.0",
+    "css-loader": "^5.0.1",
+    "draft-js": "^0.10.5",
+    "html-webpack-plugin": "^4.5.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-native-webview": "^11.0.2",
+    "script-ext-html-webpack-plugin": "^2.1.5",
+    "style-loader": "^2.0.0",
+    "typescript": "^4.1.3",
+    "webpack": "4.44.2",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1",
+    "webpack-merge": "^5.7.3"
+  }
+}
