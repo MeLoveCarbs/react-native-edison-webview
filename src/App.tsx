@@ -3,9 +3,11 @@ import { Buffer } from "buffer";
 import DarkModeUtil from "./utils/dark-mode";
 import ResizeUtil from "./utils/samrt-resize";
 import OversizeUtil from "./utils/oversize";
+import "./styles";
 
 const EventName = {
   IsMounted: "isMounted",
+  OnLoad: "onLoad",
   HeightChange: "heightChange",
   ClickLink: "clickLink",
   Debugger: "debugger",
@@ -66,6 +68,7 @@ class App extends React.Component<any, State> {
       preState.isPreviewMode !== this.state.isPreviewMode
     ) {
       this.debounceOnContentChange();
+      this.postMessage(EventName.OnLoad, true);
     }
   }
 

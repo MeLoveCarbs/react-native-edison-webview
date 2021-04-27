@@ -23,5 +23,5 @@
     "strict": true,
     "noEmit": false
   },
-  "include": ["index.ts"]
+  "include": ["index.tsx"]
 }
