@@ -65,7 +65,7 @@ class DarkModeUtils {
       if (a !== 0) {
         // not transparent
         node.style.setProperty(
-          "backgroundColor",
+          "background-color",
           this.reversedColor(r, g, b, "backgroundColor"),
           "important"
         );

@@ -73,8 +73,10 @@ class SmartResize {
   };
 
   scaleElement = (element: HTMLElement, fromWidth: number, scale: number) => {
+    // element scale is a little small then the scale, to keep the width is enough
+    const scaleWithBuffer = Math.floor(scale * 100) / 100;
     element.style.width = fromWidth + "px";
-    element.style.transform = "scale(" + scale + ")";
+    element.style.transform = "scale(" + scaleWithBuffer + ")";
     element.classList.add("edo-transform");
   };
 

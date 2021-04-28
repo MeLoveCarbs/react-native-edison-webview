@@ -46,8 +46,7 @@ table.hide td.hide {
 }
 
 .edo-transform {
-  transform-origin-x: 0px;
-  transform-origin-y: 0px;
+  transform-origin: 0px 0px;
 }
 
 .x-apple-signature {
