@@ -88,7 +88,7 @@ class App extends React.Component<any, State> {
       if (html) {
         const htmlStr = Buffer.from(html, "base64").toString("utf-8");
         // clear the meta to keep style
-        const reg = /<meta[^<>]*name="viewport"[^<>]*\/?>/g;
+        const reg = /<meta\s+name=(['"\s]?)viewport\1\s+content=[^>]*>/gi;
         const formatHTML = htmlStr.replace(reg, "");
         const hasImgOrVideo = this.calcHasImgOrVideo(formatHTML);
         this.setState({ html: formatHTML, hasImgOrVideo });
