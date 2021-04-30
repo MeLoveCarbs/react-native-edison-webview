@@ -56,7 +56,7 @@ class App extends React.Component<any, State> {
     window.setPreviewMode = this.setPreviewMode;
 
     window.addEventListener("resize", () => {
-      this.debounceUpdateSize("window-resize");
+      this.updateSize("window-resize");
     });
     this.postMessage(EventName.IsMounted, true);
   }
@@ -138,40 +138,50 @@ class App extends React.Component<any, State> {
     this.postMessage(EventName.HeightChange, calcHeight);
   };
 
-  private debounceUpdateSize = debounce(this.updateSize, 300);
-
   private applyDarkMode = () => {
-    const container = document.getElementById("edo-container");
-    if (!container) {
-      return;
+    try {
+      const container = document.getElementById("edo-container");
+      if (!container) {
+        return;
+      }
+      Array.from(container.querySelectorAll("*"))
+        .reverse()
+        .forEach((node) => {
+          if (node instanceof HTMLElement) {
+            DarkModeUtil.applyDarkModeForNode(node);
+          }
+        });
+    } catch (err) {
+      // pass
     }
-    Array.from(container.querySelectorAll("*"))
-      .reverse()
-      .forEach((node) => {
-        if (node instanceof HTMLElement) {
-          DarkModeUtil.applyDarkModeForNode(node);
-        }
-      });
   };
 
   private fixLongURL = () => {
-    const container = document.getElementById("edo-container");
-    if (!container) {
-      return;
+    try {
+      const container = document.getElementById("edo-container");
+      if (!container) {
+        return;
+      }
+      Array.from(container.querySelectorAll("a")).forEach((ele) => {
+        OversizeUtil.fixLongURL(ele);
+      });
+    } catch (err) {
+      // pass
     }
-    Array.from(container.querySelectorAll("a")).forEach((ele) => {
-      OversizeUtil.fixLongURL(ele);
-    });
   };
 
   private limitImageWidth = () => {
-    const container = document.getElementById("edo-container");
-    if (!container) {
-      return;
+    try {
+      const container = document.getElementById("edo-container");
+      if (!container) {
+        return;
+      }
+      Array.from(container.querySelectorAll("img")).forEach((ele) => {
+        OversizeUtil.limitImageWidth(ele, container.offsetWidth);
+      });
+    } catch (err) {
+      // pass
     }
-    Array.from(container.querySelectorAll("img")).forEach((ele) => {
-      OversizeUtil.limitImageWidth(ele, container.offsetWidth);
-    });
   };
 
   private addEventListenerForLink = () => {
@@ -194,7 +204,7 @@ class App extends React.Component<any, State> {
     }
     Array.from(container.querySelectorAll("img")).forEach((ele) => {
       ele.addEventListener("load", (e) => {
-        this.debounceUpdateSize("image-load");
+        this.updateSize("image-load");
       });
     });
   };
@@ -222,40 +232,54 @@ class App extends React.Component<any, State> {
     const originalWidth = container.scrollWidth;
     if (originalWidth > targetWidth) {
       const ratio = targetWidth / originalWidth;
-
-      ResizeUtil.scaleElement(container, originalWidth, ratio);
+      try {
+        ResizeUtil.scaleElement(container, originalWidth, ratio);
+      } catch (err) {
+        // pass
+      }
 
       const sheets = document.styleSheets;
-      for (const sheet of sheets) {
-        ResizeUtil.zoomFontSizeInCss(sheet, 1.0 / ratio);
+      try {
+        for (const sheet of sheets) {
+          ResizeUtil.zoomFontSizeInCss(sheet, 1.0 / ratio);
+        }
+      } catch (err) {
+        // pass
       }
 
       const fontSizeElements = container.querySelectorAll(
         "*[style], font[size]"
       );
-      for (const element of fontSizeElements) {
-        if (element instanceof HTMLElement) {
-          ResizeUtil.zoomText(element, 1.0 / ratio);
-        }
-      }
-
-      if (container.scrollWidth > container.offsetWidth + 20) {
-        const elements = container.querySelectorAll(
-          "td>a[style], td>span[style], td>font[size]"
-        );
-        for (const element of elements) {
+      try {
+        for (const element of fontSizeElements) {
           if (element instanceof HTMLElement) {
-            ResizeUtil.scaleDownText(
-              element,
-              (container.offsetWidth - 20) / container.scrollWidth
-            );
+            ResizeUtil.zoomText(element, 1.0 / ratio);
           }
         }
+      } catch (err) {
+        // pass
+      }
+      try {
+        if (container.scrollWidth > container.offsetWidth + 20) {
+          const elements = container.querySelectorAll(
+            "td>a[style], td>span[style], td>font[size]"
+          );
+          for (const element of elements) {
+            if (element instanceof HTMLElement) {
+              ResizeUtil.scaleDownText(
+                element,
+                (container.offsetWidth - 20) / container.scrollWidth
+              );
+            }
+          }
+        }
+      } catch (err) {
+        // pass
       }
 
       document.body.style.height = container.offsetHeight * ratio + "px";
     }
-    this.debounceUpdateSize("html-reload");
+    this.updateSize("html-reload");
   };
 
   private onContentChange = () => {

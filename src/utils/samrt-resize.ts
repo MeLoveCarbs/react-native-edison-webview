@@ -10,12 +10,15 @@ class SmartResize {
 
   private getCssRules = (sheet: CSSStyleSheet) => {
     const rules: CSSStyleRule[] = [];
+    if (!sheet.cssRules) {
+      return [];
+    }
     for (const rule of sheet.cssRules) {
-      if ("style" in rule) {
+      const ruleWithoutType = rule as any;
+      if (ruleWithoutType.style) {
         rules.push(rule as CSSStyleRule);
-      } else if ("cssRules" in rule) {
-        const withType = rule as CSSKeyframesRule | CSSGroupingRule;
-        const ruleList = Array.from(withType.cssRules) as CSSStyleRule[];
+      } else if (ruleWithoutType.cssRules) {
+        const ruleList = Array.from(ruleWithoutType.cssRules) as CSSStyleRule[];
         rules.push(...ruleList);
       }
     }
