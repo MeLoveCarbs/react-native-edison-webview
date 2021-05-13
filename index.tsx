@@ -1,4 +1,5 @@
 import React, { Component, createRef } from "react";
+import { Platform } from "react-native";
 import WebView, {
   WebViewMessageEvent,
   WebViewProps,
@@ -23,21 +24,51 @@ const EventName = {
   Debugger: "debugger",
 } as const;
 
-let messageBodyFilePath = `${RNFS.CachesDirectoryPath}/messageBody.html`;
-const htmlPath = `file://${RNFS.MainBundlePath}/assets/node_modules/${Package.name}/index.html`;
+const messageBodyFileTargetPath = `file://${RNFS.CachesDirectoryPath}/messageBody.html`;
+let messageBodyFilePath = messageBodyFileTargetPath;
 
-const copyFile = async () => {
+async function copyFileForIos() {
+  const htmlPath = `file://${RNFS.MainBundlePath}/assets/node_modules/${Package.name}/index.html`;
   try {
-    const fileHasExists = await RNFS.exists(messageBodyFilePath);
+    const fileHasExists = await RNFS.exists(messageBodyFileTargetPath);
     if (fileHasExists) {
-      await RNFS.unlink(messageBodyFilePath);
+      await RNFS.unlink(messageBodyFileTargetPath);
     }
-    await RNFS.copyFile(htmlPath, messageBodyFilePath);
+    await RNFS.copyFile(htmlPath, messageBodyFileTargetPath);
+    return messageBodyFileTargetPath;
   } catch (err) {
     // badcase remedy
-    messageBodyFilePath = htmlPath;
+    return htmlPath;
   }
-};
+}
+
+async function copyFileForAndroid() {
+  const htmlResPath = `raw/node_modules_${Package.name.replace(
+    /-/g,
+    ""
+  )}_index.html`;
+  try {
+    const fileHasExists = await RNFS.exists(messageBodyFileTargetPath);
+    if (fileHasExists) {
+      await RNFS.unlink(messageBodyFileTargetPath);
+    }
+    await RNFS.copyFileRes(htmlResPath, messageBodyFileTargetPath);
+    return messageBodyFileTargetPath;
+  } catch (err) {
+    // badcase remedy
+    return `file:///android_res/${htmlResPath}`;
+  }
+}
+
+async function copyFile() {
+  if (Platform.OS === "ios") {
+    const filePath = await copyFileForIos();
+    messageBodyFilePath = filePath;
+  } else if (Platform.OS === "android") {
+    const filePath = await copyFileForAndroid();
+    messageBodyFilePath = filePath;
+  }
+}
 
 copyFile();
 
@@ -59,12 +90,25 @@ type EdisonWebViewProps = {
   onMessage: (type: WebviewEvent, data: any) => void;
 } & Omit<WebViewProps, WithoutProps>;
 
-export default class RNWebView extends Component<EdisonWebViewProps> {
+type EdisonWebViewState = {
+  webviewUri: string;
+};
+export default class RNWebView extends Component<
+  EdisonWebViewProps,
+  EdisonWebViewState
+> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      webviewUri: "",
+    };
   }
 
   private webViewRef = createRef<WebView>();
+
+  componentDidMount() {
+    this.setState({ webviewUri: messageBodyFilePath });
+  }
 
   componentDidUpdate(prevProps: EdisonWebViewProps) {
     if (prevProps.isDrakMode !== this.props.isDrakMode) {
@@ -132,7 +176,8 @@ export default class RNWebView extends Component<EdisonWebViewProps> {
         {...this.props}
         ref={this.webViewRef}
         originWhitelist={["*"]}
-        source={{ uri: messageBodyFilePath }}
+        source={{ uri: this.state.webviewUri }}
+        allowFileAccess
         allowingReadAccessToURL={"file://"}
         onMessage={this.onMessage}
       />
