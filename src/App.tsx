@@ -1,9 +1,10 @@
-import React, { createRef } from "react";
 import { Buffer } from "buffer";
-import DarkModeUtil from "./utils/dark-mode";
-import ResizeUtil from "./utils/samrt-resize";
-import OversizeUtil from "./utils/oversize";
+import React from "react";
 import "./styles";
+import DarkModeUtil from "./utils/dark-mode";
+import OversizeUtil from "./utils/oversize";
+import ResizeUtil from "./utils/samrt-resize";
+import SpecialHandle from "./utils/special-handle";
 
 const EventName = {
   IsMounted: "isMounted",
@@ -282,6 +283,22 @@ class App extends React.Component<any, State> {
     this.updateSize("html-reload");
   };
 
+  private specialHandle = () => {
+    try {
+      const container = document.getElementById("edo-container");
+      if (!container) {
+        return;
+      }
+      Array.from(container.querySelectorAll("*")).forEach((node) => {
+        if (node instanceof HTMLElement) {
+          SpecialHandle.removeFacebookHiddenText(node);
+        }
+      });
+    } catch (err) {
+      // pass
+    }
+  };
+
   private onContentChange = () => {
     if (this.state.isDarkMode) {
       this.applyDarkMode();
@@ -292,6 +309,7 @@ class App extends React.Component<any, State> {
     this.fixLongURL();
     this.limitImageWidth();
     this.smartResize();
+    this.specialHandle();
   };
 
   private debounceOnContentChange = debounce(this.onContentChange, 300);
