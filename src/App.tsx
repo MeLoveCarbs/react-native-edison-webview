@@ -15,8 +15,8 @@ const EventName = {
 } as const;
 
 const darkModeStyle = `
-  html {
-    background-color: transparent !important;
+  html, body.edo, #edo-container {
+    background-color: #121212 !important;
   }
   body {
     color: #fff;
@@ -27,11 +27,8 @@ const darkModeStyle = `
 `;
 
 const lightModeStyle = `
-  html {
+  html, body.edo, #edo-container {
     background-color: #ffffff !important;
-  }
-  body.edo {
-    background-color: #ffffff;
   }
 `;
 
@@ -320,9 +317,7 @@ class App extends React.Component<any, State> {
   render() {
     const { html, isDarkMode, isPreviewMode, hasImgOrVideo } = this.state;
     const containerStyles: React.CSSProperties =
-      isPreviewMode && !hasImgOrVideo
-        ? { paddingLeft: "2ex", paddingRight: "2ex" }
-        : {};
+      isPreviewMode && !hasImgOrVideo ? { padding: "2ex" } : {};
     return (
       <>
         <style>{isDarkMode ? darkModeStyle : lightModeStyle}</style>
