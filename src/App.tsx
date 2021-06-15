@@ -15,8 +15,8 @@ const EventName = {
 } as const;
 
 const darkModeStyle = `
-  html {
-    background-color: transparent !important;
+  html, body.edo, #edo-container {
+    background-color: #121212 !important;
   }
   body {
     color: #fff;
@@ -24,11 +24,8 @@ const darkModeStyle = `
 `;
 
 const lightModeStyle = `
-  html {
+  html, body.edo, #edo-container {
     background-color: #ffffff !important;
-  }
-  body.edo {
-    background-color: #ffffff;
   }
 `;
 
