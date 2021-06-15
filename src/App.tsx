@@ -314,9 +314,7 @@ class App extends React.Component<any, State> {
   render() {
     const { html, isDarkMode, isPreviewMode, hasImgOrVideo } = this.state;
     const containerStyles: React.CSSProperties =
-      isPreviewMode && !hasImgOrVideo
-        ? { paddingLeft: "2ex", paddingRight: "2ex" }
-        : {};
+      isPreviewMode && !hasImgOrVideo ? { padding: "2ex" } : {};
     return (
       <>
         <style>{isDarkMode ? darkModeStyle : lightModeStyle}</style>
