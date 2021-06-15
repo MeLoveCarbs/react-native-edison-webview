@@ -21,6 +21,9 @@ const darkModeStyle = `
   body {
     color: #fff;
   }
+  table {
+    background-color: #121212;
+  }
 `;
 
 const lightModeStyle = `
